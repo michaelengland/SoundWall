@@ -1,14 +1,18 @@
-# built application files
+# Mac OS files
+.DS_Store
+
+# Built application files
 *.apk
 *.ap_
 
-# files for the dex VM
+# Files for the dex VM
 *.dex
 
 # Java class files
 *.class
 
-# generated files
+# Generated files
+target/
 bin/
 gen/
 
@@ -18,3 +22,7 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+# Intellij project files
+.idea/
+*.iml
