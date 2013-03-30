@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello soundwall!</string>
-    <string name="app_name">soundwall</string>
+    <string name="app_name">SoundWall</string>
+    <string name="wallpaper_name">SoundWall Live WallPaper</string>
+    <string name="wallpaper_description">
+        Live Wallpaper showing waveforms of all your favourite tracks on SoundCloud!
+    </string>
 </resources>
