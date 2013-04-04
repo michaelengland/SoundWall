@@ -1,5 +1,6 @@
 package com.github.michaelengland.modules;
 
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
@@ -51,5 +52,12 @@ public class AndroidModuleTest {
         // Can't mock static methods without PowerMock
         Context context = subject.provideAppContext();
         Assert.assertThat(subject.provideSharedPreferences(context), CoreMatchers.instanceOf(SharedPreferences.class));
+    }
+
+    @Test
+    public void testShouldProvideAccountManager() throws Exception {
+        // Can't mock static methods without PowerMock
+        Context context = subject.provideAppContext();
+        Assert.assertThat(subject.provideAccountManager(context), CoreMatchers.instanceOf(AccountManager.class));
     }
 }

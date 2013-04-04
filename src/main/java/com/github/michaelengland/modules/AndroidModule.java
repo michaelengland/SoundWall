@@ -1,5 +1,6 @@
 package com.github.michaelengland.modules;
 
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
@@ -32,5 +33,10 @@ public class AndroidModule {
     @Provides
     SharedPreferences provideSharedPreferences(final Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    @Provides
+    AccountManager provideAccountManager(final Context context) {
+        return AccountManager.get(context);
     }
 }
