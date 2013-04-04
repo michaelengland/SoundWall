@@ -1,6 +1,7 @@
 package com.github.michaelengland.modules;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import com.github.michaelengland.SoundWallApplication;
@@ -43,5 +44,12 @@ public class AndroidModuleTest {
     public void testShouldProvideAssetManagerViaResources() throws Exception {
         Mockito.when(resources.getAssets()).thenReturn(assetManager);
         Assert.assertThat(subject.provideAssetManager(resources), CoreMatchers.equalTo(assetManager));
+    }
+
+    @Test
+    public void testShouldProvideDefaultSharedPreferences() throws Exception {
+        // Can't mock static methods without PowerMock
+        Context context = subject.provideAppContext();
+        Assert.assertThat(subject.provideSharedPreferences(context), CoreMatchers.instanceOf(SharedPreferences.class));
     }
 }

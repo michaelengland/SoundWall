@@ -1,8 +1,10 @@
 package com.github.michaelengland.modules;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import com.github.michaelengland.SoundWallApplication;
 import dagger.Module;
 import dagger.Provides;
@@ -25,5 +27,10 @@ public class AndroidModule {
     @Provides
     AssetManager provideAssetManager(final Resources resources) {
         return resources.getAssets();
+    }
+
+    @Provides
+    SharedPreferences provideSharedPreferences(final Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
     }
 }
