@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/account">
+        <Preference
+                android:key="@string/login_key"
+                android:title="@string/login"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/about">
+        <Preference
+                android:key="@string/sound_wall_key"
+                android:title="@string/sound_wall"
+                android:summary="@string/sound_wall_summary"/>
+        <Preference
+                android:key="@string/sound_cloud_key"
+                android:title="@string/sound_cloud"
+                android:summary="@string/sound_cloud_summary"/>
+    </PreferenceCategory>
+</PreferenceScreen>

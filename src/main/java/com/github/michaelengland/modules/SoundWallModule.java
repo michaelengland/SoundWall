@@ -1,7 +1,7 @@
 package com.github.michaelengland.modules;
 
 import com.github.michaelengland.SoundWallApplication;
-import com.github.michaelengland.activities.HelloAndroidActivity;
+import com.github.michaelengland.activities.SettingsActivity;
 import com.github.michaelengland.services.SoundWallWallpaperService;
 import com.github.michaelengland.wallpaper.SoundWallArtist;
 import com.github.michaelengland.wallpaper.SoundWallArtistImpl;
@@ -12,7 +12,7 @@ import dagger.Provides;
         entryPoints = {
                 SoundWallApplication.class,
                 SoundWallWallpaperService.class,
-                HelloAndroidActivity.class
+                SettingsActivity.class
         },
         includes = {
                 AndroidModule.class

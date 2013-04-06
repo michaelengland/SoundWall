@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello soundwall!</string>
-    <string name="app_name">SoundWall</string>
+    <string name="name">SoundWall</string>
     <string name="wallpaper_name">SoundWall Live WallPaper</string>
     <string name="wallpaper_description">
         Live Wallpaper showing waveforms of all your favourite tracks on SoundCloud!
+    </string>
+    <string name="account">Account</string>
+    <string name="about">About</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="sound_wall">SoundWall</string>
+    <string name="sound_wall_summary">
+        SoundWall is an open-source app written by MichaelEngland
+    </string>
+    <string name="sound_cloud">SoundCloud</string>
+    <string name="sound_cloud_summary">
+        SoundCloud is the world’s leading social sound platform where anyone can create sounds and share them
+        everywhere.
     </string>
 </resources>

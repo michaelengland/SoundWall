@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_key">login</string>
+    <string name="sound_wall_key">soundwall</string>
+    <string name="sound_cloud_key">soundcloud</string>
+</resources>
