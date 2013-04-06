@@ -8,7 +8,7 @@
     <packaging>apk</packaging>
     <name>SoundWall</name>
     <properties>
-        <platform.version>2.3.3</platform.version>
+        <platform.version>4.1.1.4</platform.version>
         <soundcloud.version>1.2.1</soundcloud.version>
         <dagger.version>0.9.1</dagger.version>
         <robolectric.version>1.2</robolectric.version>
