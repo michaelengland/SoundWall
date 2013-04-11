@@ -27,3 +27,6 @@ local.properties
 # Intellij project files
 .idea/
 *.iml
+
+# Config files
+*.properties
