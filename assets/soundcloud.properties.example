@@ -1,0 +1,3 @@
+# SoundCloud Api Client Id & Secret from https://soundcloud.com/you/apps
+soundcloud.client_id = YourClientIdGoesHere
+soundcloud.client_secret = YourClientSecretGoesHere

@@ -15,7 +15,8 @@ import dagger.Provides;
                 SettingsActivity.class
         },
         includes = {
-                AndroidModule.class
+                AndroidModule.class,
+                SoundWallApiModule.class
         }
 )
 public class SoundWallModule {
