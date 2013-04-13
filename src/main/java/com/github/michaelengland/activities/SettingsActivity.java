@@ -3,26 +3,32 @@ package com.github.michaelengland.activities;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.Log;
+import android.widget.Toast;
 import com.github.michaelengland.R;
 import com.github.michaelengland.SoundWallApplication;
-import com.github.michaelengland.fragments.LoginDialogFragment;
+import com.github.michaelengland.fragments.LoginInputFragment;
+import com.github.michaelengland.fragments.LoginTaskFragment;
 import com.github.michaelengland.fragments.SettingsFragment;
 import com.github.michaelengland.managers.LoginManager;
 
 import javax.inject.Inject;
 
 public class SettingsActivity extends PreferenceActivity implements SettingsFragment.OnLoginAttemptRequestedListener,
-        LoginDialogFragment.OnLoginInputListener {
+        LoginInputFragment.OnLoginInputListener, LoginTaskFragment.OnLoginStatusChangedListener {
     private static final String TAG = "SettingsActivity";
 
-    private static final String LOGIN_DIALOG_TAG = "LoginDialog";
+    private static final String LOGIN_INPUT_TAG = "LoginInput";
+    private static final String LOGIN_ACTION_TAG = "LoadingAction";
 
     private static final String USERNAME_KEY = "Username";
     private static final String PASSWORD_KEY = "Password";
 
     @Inject
     LoginManager loginManager;
-    String username, password;
+
+    private LoginTaskFragment loginTaskFragment;
+
+    private String username, password;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,18 +66,48 @@ public class SettingsActivity extends PreferenceActivity implements SettingsFrag
     }
 
     @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed()");
+        if (loginTaskFragment != null && loginTaskFragment.isVisible()) {
+            loginTaskFragment.dismiss();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public void onLoginAttemptRequested() {
-        LoginDialogFragment loginDialogFragment = LoginDialogFragment.newInstance(username, password);
-        loginDialogFragment.show(getFragmentManager(), LOGIN_DIALOG_TAG);
+        showLoginInputDialog();
+    }
+
+    private void showLoginInputDialog() {
+        LoginInputFragment loginInputFragment = LoginInputFragment.newInstance(username, password);
+        loginInputFragment.show(getFragmentManager(), LOGIN_INPUT_TAG);
     }
 
     @Override
     public void onLoginInputted(String username, String password) {
-        Log.d(TAG, "USER LOGIN: " + username);
+        this.username = username;
+        this.password = password;
+        performLogin();
+    }
+
+    private void performLogin() {
+        loginTaskFragment = LoginTaskFragment.newInstance(username, password);
+        loginTaskFragment.show(getFragmentManager(), LOGIN_ACTION_TAG);
     }
 
     @Override
-    public void onLoginCancelled() {
-        // NO-OP
+    public void onLoginSuccessful() {
+        loginTaskFragment.dismiss();
+        Toast.makeText(this, R.string.login_successful, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLoginFailed() {
+        this.password = "";
+        loginTaskFragment.dismiss();
+        Toast.makeText(this, R.string.login_failed, Toast.LENGTH_SHORT).show();
+        showLoginInputDialog();
     }
 }

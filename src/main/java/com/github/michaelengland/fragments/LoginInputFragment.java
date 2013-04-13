@@ -12,9 +12,10 @@ import android.widget.EditText;
 import butterknife.InjectView;
 import butterknife.Views;
 import com.github.michaelengland.R;
+import com.github.michaelengland.SoundWallApplication;
 
-public class LoginDialogFragment extends DialogFragment {
-    private static final String TAG = "LoginDialogFragment";
+public class LoginInputFragment extends DialogFragment {
+    private static final String TAG = "LoginInputFragment";
 
     private static final String USERNAME_KEY = "Username";
     private static final String PASSWORD_KEY = "Password";
@@ -28,19 +29,20 @@ public class LoginDialogFragment extends DialogFragment {
     @InjectView(R.id.password_text)
     EditText passwordText;
 
-    public static LoginDialogFragment newInstance(String username, String password) {
-        LoginDialogFragment loginDialogFragment = new LoginDialogFragment();
+    public static LoginInputFragment newInstance(String username, String password) {
+        LoginInputFragment loginInputFragment = new LoginInputFragment();
         Bundle args = new Bundle();
         args.putString(USERNAME_KEY, username);
         args.putString(PASSWORD_KEY, password);
-        loginDialogFragment.setArguments(args);
-        return loginDialogFragment;
+        loginInputFragment.setArguments(args);
+        return loginInputFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
+        SoundWallApplication.getInstance().inject(this);
         setupLoginView();
         if (savedInstanceState != null) {
             setLoginState(savedInstanceState);
@@ -66,7 +68,7 @@ public class LoginDialogFragment extends DialogFragment {
                 .setTitle(R.string.login)
                 .setView(loginView)
                 .setPositiveButton(R.string.login, new LoginClickListener(this))
-                .setNegativeButton(android.R.string.cancel, new CancelClickListener(this))
+                .setNegativeButton(android.R.string.cancel, null)
                 .create();
     }
 
@@ -78,7 +80,7 @@ public class LoginDialogFragment extends DialogFragment {
             listener = (OnLoginInputListener) activity;
         } else {
             throw new ClassCastException(activity.toString()
-                    + " must implement LoginDialogFragment.OnLoginInputListener");
+                    + " must implement LoginInputFragment.OnLoginInputListener");
         }
     }
 
@@ -91,14 +93,12 @@ public class LoginDialogFragment extends DialogFragment {
 
     public static interface OnLoginInputListener {
         public void onLoginInputted(String username, String password);
-
-        public void onLoginCancelled();
     }
 
     static class LoginClickListener implements DialogInterface.OnClickListener {
-        LoginDialogFragment fragment;
+        LoginInputFragment fragment;
 
-        LoginClickListener(LoginDialogFragment fragment) {
+        LoginClickListener(LoginInputFragment fragment) {
             this.fragment = fragment;
         }
 
@@ -106,19 +106,6 @@ public class LoginDialogFragment extends DialogFragment {
         public void onClick(DialogInterface dialogInterface, int which) {
             fragment.listener.onLoginInputted(fragment.loginText.getText().toString(),
                     fragment.passwordText.getText().toString());
-        }
-    }
-
-    static class CancelClickListener implements DialogInterface.OnClickListener {
-        LoginDialogFragment fragment;
-
-        CancelClickListener(LoginDialogFragment fragment) {
-            this.fragment = fragment;
-        }
-
-        @Override
-        public void onClick(DialogInterface dialogInterface, int which) {
-            fragment.listener.onLoginCancelled();
         }
     }
 }

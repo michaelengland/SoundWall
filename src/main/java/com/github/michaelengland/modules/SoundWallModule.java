@@ -2,6 +2,8 @@ package com.github.michaelengland.modules;
 
 import com.github.michaelengland.SoundWallApplication;
 import com.github.michaelengland.activities.SettingsActivity;
+import com.github.michaelengland.fragments.LoginInputFragment;
+import com.github.michaelengland.fragments.LoginTaskFragment;
 import com.github.michaelengland.services.SoundWallWallpaperService;
 import com.github.michaelengland.wallpaper.SoundWallArtist;
 import com.github.michaelengland.wallpaper.SoundWallArtistImpl;
@@ -12,7 +14,9 @@ import dagger.Provides;
         entryPoints = {
                 SoundWallApplication.class,
                 SoundWallWallpaperService.class,
-                SettingsActivity.class
+                SettingsActivity.class,
+                LoginTaskFragment.class,
+                LoginInputFragment.class
         },
         includes = {
                 AndroidModule.class,

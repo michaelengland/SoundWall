@@ -18,10 +18,6 @@ public class LoginTaskTest {
     private LoginTask.LoginTaskListener listener;
 
     static class TestableLoginTask extends LoginTask {
-        public TestableLoginTask(String username, String password) {
-            super(username, password);
-        }
-
         @Override
         public Token doInBackground(Void... voids) {
             return super.doInBackground(voids);
@@ -35,7 +31,9 @@ public class LoginTaskTest {
 
     @Before
     public void setUp() throws Exception {
-        subject = new TestableLoginTask("user", "pass");
+        subject = new TestableLoginTask();
+        subject.setUsername("user");
+        subject.setPassword("pass");
         client = PowerMockito.mock(SoundCloudClient.class);
         token = PowerMockito.mock(Token.class);
         listener = PowerMockito.mock(LoginTask.LoginTaskListener.class);
