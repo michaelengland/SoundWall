@@ -7,8 +7,11 @@ import com.github.michaelengland.fragments.LoginTaskFragment;
 import com.github.michaelengland.services.SoundWallWallpaperService;
 import com.github.michaelengland.wallpaper.SoundWallArtist;
 import com.github.michaelengland.wallpaper.SoundWallArtistImpl;
+import com.squareup.otto.Bus;
 import dagger.Module;
 import dagger.Provides;
+
+import javax.inject.Singleton;
 
 @Module(
         entryPoints = {
@@ -27,5 +30,11 @@ public class SoundWallModule {
     @Provides
     SoundWallArtist provideSoundWallArtist() {
         return new SoundWallArtistImpl();
+    }
+
+    @Singleton
+    @Provides
+    Bus provideBus() {
+        return new Bus();
     }
 }

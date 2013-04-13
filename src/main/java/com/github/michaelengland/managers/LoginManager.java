@@ -2,6 +2,8 @@ package com.github.michaelengland.managers;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -10,13 +12,16 @@ import javax.inject.Singleton;
 public class LoginManager {
     private static final String SOUND_CLOUD_ACCOUNT_TYPE = "com.soundcloud.android.account";
 
-    AccountManager accountManager;
-    SettingsManager settingsManager;
+    private AccountManager accountManager;
+    private SettingsManager settingsManager;
+    private Bus bus;
 
     @Inject
-    LoginManager(final AccountManager accountManager, final SettingsManager settingsManager) {
+    LoginManager(final AccountManager accountManager, final SettingsManager settingsManager, final Bus bus) {
         this.accountManager = accountManager;
         this.settingsManager = settingsManager;
+        this.bus = bus;
+        bus.register(this);
     }
 
     public boolean isLoggedIn() {
@@ -39,5 +44,10 @@ public class LoginManager {
         } else {
             return null;
         }
+    }
+
+    @Subscribe
+    void tokenChanged(TokenChangeEvent event) {
+        bus.post(new UserStateChangeEvent());
     }
 }

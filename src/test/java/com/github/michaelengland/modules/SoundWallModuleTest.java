@@ -1,6 +1,7 @@
 package com.github.michaelengland.modules;
 
 import com.github.michaelengland.wallpaper.SoundWallArtistImpl;
+import com.squareup.otto.Bus;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -20,5 +21,10 @@ public class SoundWallModuleTest {
     @Test
     public void testShouldProvideSoundWallArtist() throws Exception {
         Assert.assertThat(subject.provideSoundWallArtist(), CoreMatchers.instanceOf(SoundWallArtistImpl.class));
+    }
+
+    @Test
+    public void testShouldProvideBus() throws Exception {
+        Assert.assertThat(subject.provideBus(), CoreMatchers.instanceOf(Bus.class));
     }
 }

@@ -3,6 +3,7 @@ package com.github.michaelengland.managers;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import com.soundcloud.api.Token;
+import com.squareup.otto.Bus;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -17,16 +18,23 @@ public class LoginManagerTest {
     private LoginManager subject;
     private SettingsManager settingsManager;
     private AccountManager accountManager;
+    private Bus bus;
     private Account[] accounts;
 
     @Before
     public void setUp() throws Exception {
         settingsManager = PowerMockito.mock(SettingsManager.class);
         accountManager = PowerMockito.mock(AccountManager.class);
-        subject = new LoginManager(accountManager, settingsManager);
+        bus = PowerMockito.mock(Bus.class);
+        subject = new LoginManager(accountManager, settingsManager, bus);
         accounts = new Account[2];
         accounts[0] = new Account("testUser", "com.soundcloud.android.account");
         accounts[1] = new Account("otherUser", "com.soundcloud.android.account");
+    }
+
+    @Test
+    public void testShouldRegisterWithBus() throws Exception {
+        Mockito.verify(bus).register(subject);
     }
 
     @Test
@@ -63,5 +71,11 @@ public class LoginManagerTest {
     public void testShouldSuggestFirstUsernameWhenMultipleSoundCloudAccountsSaved() throws Exception {
         Mockito.when(accountManager.getAccountsByType("com.soundcloud.android.account")).thenReturn(accounts);
         Assert.assertThat(subject.suggestedUsername(), CoreMatchers.equalTo("testUser"));
+    }
+
+    @Test
+    public void testShouldFireUserStateChangeEventWhenTokenChanges() throws Exception {
+        subject.tokenChanged(new TokenChangeEvent());
+        Mockito.verify(bus).post(new UserStateChangeEvent());
     }
 }
