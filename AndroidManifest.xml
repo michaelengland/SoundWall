@@ -5,6 +5,8 @@
           android:versionName="1.0-SNAPSHOT">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <uses-feature android:name="android.software.live_wallpaper"/>
     <application
             android:name=".SoundWallApplication"
