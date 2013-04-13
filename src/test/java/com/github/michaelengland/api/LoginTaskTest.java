@@ -56,7 +56,7 @@ public class LoginTaskTest {
     @Test
     public void testShouldFireListenerSuccessWhenListenerSetAndTokenRetrieved() throws Exception {
         subject.onPostExecute(token);
-        Mockito.verify(listener).onLoginSuccess();
+        Mockito.verify(listener).onLoginSuccess(token);
     }
 
     @Test

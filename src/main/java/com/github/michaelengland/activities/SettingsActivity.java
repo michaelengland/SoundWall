@@ -10,6 +10,7 @@ import com.github.michaelengland.fragments.LoginInputFragment;
 import com.github.michaelengland.fragments.LoginTaskFragment;
 import com.github.michaelengland.fragments.SettingsFragment;
 import com.github.michaelengland.managers.LoginManager;
+import com.soundcloud.api.Token;
 
 import javax.inject.Inject;
 
@@ -80,6 +81,11 @@ public class SettingsActivity extends PreferenceActivity implements SettingsFrag
         showLoginInputDialog();
     }
 
+    @Override
+    public void onLogoutRequested() {
+        loginManager.logout();
+    }
+
     private void showLoginInputDialog() {
         LoginInputFragment loginInputFragment = LoginInputFragment.newInstance(username, password);
         loginInputFragment.show(getFragmentManager(), LOGIN_INPUT_TAG);
@@ -98,7 +104,8 @@ public class SettingsActivity extends PreferenceActivity implements SettingsFrag
     }
 
     @Override
-    public void onLoginSuccessful() {
+    public void onLoginSuccessful(final Token token) {
+        loginManager.login(token);
         loginTaskFragment.dismiss();
         Toast.makeText(this, R.string.login_successful, Toast.LENGTH_SHORT).show();
     }

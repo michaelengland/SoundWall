@@ -8,6 +8,7 @@
     <string name="account">Account</string>
     <string name="about">About</string>
     <string name="login">Login</string>
+    <string name="logout">Logout</string>
     <string name="password">Password</string>
     <string name="sound_wall">SoundWall</string>
     <string name="sound_wall_summary">

@@ -1,6 +1,5 @@
 package com.github.michaelengland.api;
 
-import com.github.michaelengland.managers.SettingsManager;
 import com.soundcloud.api.ApiWrapper;
 import com.soundcloud.api.Token;
 
@@ -9,12 +8,10 @@ import java.io.IOException;
 
 public class SoundCloudClient {
     ApiWrapper apiWrapper;
-    SettingsManager settingsManager;
 
     @Inject
-    SoundCloudClient(final ApiWrapper apiWrapper, final SettingsManager settingsManager) {
+    SoundCloudClient(final ApiWrapper apiWrapper) {
         this.apiWrapper = apiWrapper;
-        this.settingsManager = settingsManager;
     }
 
     public Token login(String username, String password) throws SoundCloudClientException {
@@ -26,8 +23,6 @@ public class SoundCloudClient {
     }
 
     private Token performLogin(String username, String password) throws IOException {
-        Token token = apiWrapper.login(username, password);
-        settingsManager.setToken(token);
-        return token;
+        return apiWrapper.login(username, password);
     }
 }

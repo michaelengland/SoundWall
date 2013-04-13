@@ -38,7 +38,7 @@ public class LoginTask extends AsyncTask<Void, Void, Token> {
     protected void onPostExecute(Token token) {
         if (listener != null) {
             if (token != null) {
-                listener.onLoginSuccess();
+                listener.onLoginSuccess(token);
             } else {
                 listener.onLoginFailure();
             }
@@ -46,7 +46,7 @@ public class LoginTask extends AsyncTask<Void, Void, Token> {
     }
 
     public static interface LoginTaskListener {
-        void onLoginSuccess();
+        void onLoginSuccess(Token token);
 
         void onLoginFailure();
     }

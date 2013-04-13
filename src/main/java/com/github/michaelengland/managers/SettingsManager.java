@@ -2,7 +2,6 @@ package com.github.michaelengland.managers;
 
 import android.content.SharedPreferences;
 import com.soundcloud.api.Token;
-import com.squareup.otto.Bus;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -14,15 +13,12 @@ public class SettingsManager {
     private static final String TOKEN_SCOPE_KEY = "token_scope";
 
     private SharedPreferences sharedPreferences;
-    private Bus bus;
 
     private Token token;
 
     @Inject
-    SettingsManager(final SharedPreferences sharedPreferences, final Bus bus) {
+    SettingsManager(final SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
-        this.bus = bus;
-        bus.register(this);
     }
 
     public synchronized Token getToken() {
@@ -44,7 +40,6 @@ public class SettingsManager {
     public synchronized void setToken(Token token) {
         this.token = token;
         saveTokenToSharedPreferences();
-        bus.post(new TokenChangeEvent());
     }
 
     private void saveTokenToSharedPreferences() {

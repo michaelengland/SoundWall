@@ -4,6 +4,7 @@ import com.github.michaelengland.SoundWallApplication;
 import com.github.michaelengland.activities.SettingsActivity;
 import com.github.michaelengland.fragments.LoginInputFragment;
 import com.github.michaelengland.fragments.LoginTaskFragment;
+import com.github.michaelengland.fragments.SettingsFragment;
 import com.github.michaelengland.services.SoundWallWallpaperService;
 import com.github.michaelengland.wallpaper.SoundWallArtist;
 import com.github.michaelengland.wallpaper.SoundWallArtistImpl;
@@ -18,6 +19,7 @@ import javax.inject.Singleton;
                 SoundWallApplication.class,
                 SoundWallWallpaperService.class,
                 SettingsActivity.class,
+                SettingsFragment.class,
                 LoginTaskFragment.class,
                 LoginInputFragment.class
         },

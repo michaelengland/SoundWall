@@ -2,8 +2,8 @@ package com.github.michaelengland.managers;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import com.soundcloud.api.Token;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,6 +28,19 @@ public class LoginManager {
         return settingsManager.getToken() != null;
     }
 
+    public void login(Token token) {
+        setToken(token);
+    }
+
+    public void logout() {
+        setToken(null);
+    }
+
+    private void setToken(Token token) {
+        settingsManager.setToken(token);
+        bus.post(new UserStateChangeEvent());
+    }
+
     public Account soundCloudAccount() {
         Account[] accounts = accountManager.getAccountsByType(SOUND_CLOUD_ACCOUNT_TYPE);
         if (accounts.length > 0) {
@@ -44,10 +57,5 @@ public class LoginManager {
         } else {
             return null;
         }
-    }
-
-    @Subscribe
-    void tokenChanged(TokenChangeEvent event) {
-        bus.post(new UserStateChangeEvent());
     }
 }

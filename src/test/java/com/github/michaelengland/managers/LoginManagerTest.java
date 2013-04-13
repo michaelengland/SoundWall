@@ -18,6 +18,7 @@ public class LoginManagerTest {
     private LoginManager subject;
     private SettingsManager settingsManager;
     private AccountManager accountManager;
+    private Token token;
     private Bus bus;
     private Account[] accounts;
 
@@ -26,6 +27,7 @@ public class LoginManagerTest {
         settingsManager = PowerMockito.mock(SettingsManager.class);
         accountManager = PowerMockito.mock(AccountManager.class);
         bus = PowerMockito.mock(Bus.class);
+        token = new Token("", "");
         subject = new LoginManager(accountManager, settingsManager, bus);
         accounts = new Account[2];
         accounts[0] = new Account("testUser", "com.soundcloud.android.account");
@@ -39,7 +41,7 @@ public class LoginManagerTest {
 
     @Test
     public void testShouldBeLoggedInWhenTokenExists() throws Exception {
-        Mockito.when(settingsManager.getToken()).thenReturn(new Token("", ""));
+        Mockito.when(settingsManager.getToken()).thenReturn(token);
         Assert.assertTrue(subject.isLoggedIn());
     }
 
@@ -74,8 +76,26 @@ public class LoginManagerTest {
     }
 
     @Test
-    public void testShouldFireUserStateChangeEventWhenTokenChanges() throws Exception {
-        subject.tokenChanged(new TokenChangeEvent());
+    public void testShouldSetTokenOnLogin() throws Exception {
+        subject.login(token);
+        Mockito.verify(settingsManager).setToken(token);
+    }
+
+    @Test
+    public void testShouldFireUserStateChangeEventOnLogin() throws Exception {
+        subject.login(token);
+        Mockito.verify(bus).post(new UserStateChangeEvent());
+    }
+
+    @Test
+    public void testShouldSetTokenToNullOnLogout() throws Exception {
+        subject.logout();
+        Mockito.verify(settingsManager).setToken(null);
+    }
+
+    @Test
+    public void testShouldFireUserStateChangeEventOnLogout() throws Exception {
+        subject.logout();
         Mockito.verify(bus).post(new UserStateChangeEvent());
     }
 }

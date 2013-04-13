@@ -8,6 +8,13 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 import com.github.michaelengland.R;
+import com.github.michaelengland.SoundWallApplication;
+import com.github.michaelengland.managers.LoginManager;
+import com.github.michaelengland.managers.UserStateChangeEvent;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import javax.inject.Inject;
 
 public class SettingsFragment extends PreferenceFragment {
     private static final String TAG = "SettingsFragment";
@@ -17,17 +24,34 @@ public class SettingsFragment extends PreferenceFragment {
 
     OnLoginAttemptRequestedListener listener;
 
+    @Inject
+    LoginManager loginManager;
+    @Inject
+    Bus bus;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
+        SoundWallApplication.getInstance().inject(this);
         addPreferencesFromResource(R.xml.settings);
-        setPreferenceClickListeners();
+        setupLoginPreference();
+        setupUriPreferences();
+        bus.register(this);
     }
 
-    private void setPreferenceClickListeners() {
-        getPreferenceWithKeyId(R.string.login_key).setOnPreferenceClickListener(
-                new LoginPreferenceClickListener(this));
+    private void setupLoginPreference() {
+        Preference loginPreference = getPreferenceWithKeyId(R.string.login_key);
+        if (loginManager.isLoggedIn()) {
+            loginPreference.setTitle(R.string.logout);
+            loginPreference.setOnPreferenceClickListener(new LogoutPreferenceClickListener(this));
+        } else {
+            loginPreference.setTitle(R.string.login);
+            loginPreference.setOnPreferenceClickListener(new LoginPreferenceClickListener(this));
+        }
+    }
+
+    private void setupUriPreferences() {
         getPreferenceWithKeyId(R.string.sound_wall_key).setOnPreferenceClickListener(
                 new UriOpenerPreferenceClickListener(this, SOUND_WALL_URI));
         getPreferenceWithKeyId(R.string.sound_cloud_key).setOnPreferenceClickListener(
@@ -55,10 +79,18 @@ public class SettingsFragment extends PreferenceFragment {
         Log.d(TAG, "onDetach()");
         super.onDetach();
         listener = null;
+        bus.unregister(this);
+    }
+
+    @Subscribe
+    public void onUserStateChange(UserStateChangeEvent event) {
+        setupLoginPreference();
     }
 
     public static interface OnLoginAttemptRequestedListener {
-        public void onLoginAttemptRequested();
+        void onLoginAttemptRequested();
+
+        void onLogoutRequested();
     }
 
     static class LoginPreferenceClickListener implements Preference.OnPreferenceClickListener {
@@ -71,6 +103,20 @@ public class SettingsFragment extends PreferenceFragment {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             fragment.listener.onLoginAttemptRequested();
+            return true;
+        }
+    }
+
+    static class LogoutPreferenceClickListener implements Preference.OnPreferenceClickListener {
+        private SettingsFragment fragment;
+
+        LogoutPreferenceClickListener(final SettingsFragment fragment) {
+            this.fragment = fragment;
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            fragment.listener.onLogoutRequested();
             return true;
         }
     }

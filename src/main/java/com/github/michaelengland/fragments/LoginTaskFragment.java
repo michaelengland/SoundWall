@@ -11,6 +11,7 @@ import android.view.View;
 import com.github.michaelengland.R;
 import com.github.michaelengland.SoundWallApplication;
 import com.github.michaelengland.api.LoginTask;
+import com.soundcloud.api.Token;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -89,9 +90,9 @@ public class LoginTaskFragment extends DialogFragment implements LoginTask.Login
     }
 
     @Override
-    public void onLoginSuccess() {
+    public void onLoginSuccess(final Token token) {
         if (listener != null) {
-            listener.onLoginSuccessful();
+            listener.onLoginSuccessful(token);
         }
     }
 
@@ -109,7 +110,7 @@ public class LoginTaskFragment extends DialogFragment implements LoginTask.Login
     }
 
     public static interface OnLoginStatusChangedListener {
-        void onLoginSuccessful();
+        void onLoginSuccessful(final Token token);
 
         void onLoginFailed();
     }
