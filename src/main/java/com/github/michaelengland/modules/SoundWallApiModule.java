@@ -1,6 +1,7 @@
 package com.github.michaelengland.modules;
 
 import android.content.res.AssetManager;
+import com.github.michaelengland.api.TracksParser;
 import com.soundcloud.api.ApiWrapper;
 import dagger.Module;
 import dagger.Provides;
@@ -37,5 +38,10 @@ public class SoundWallApiModule {
             throw new RuntimeException("You must set a soundcloud.properties file in the assets directory. Check " +
                     "soundcloud.properties.example for an example");
         }
+    }
+
+    @Provides
+    TracksParser provideTracksParser() {
+        return new TracksParser();
     }
 }

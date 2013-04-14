@@ -1,6 +1,7 @@
 package com.github.michaelengland.modules;
 
 import android.content.res.AssetManager;
+import com.github.michaelengland.api.TracksParser;
 import com.soundcloud.api.ApiWrapper;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.hamcrest.CoreMatchers;
@@ -65,5 +66,10 @@ public class SoundWallApiModuleTest {
             Assert.fail();
         } catch (RuntimeException e) {
         }
+    }
+
+    @Test
+    public void testProvidesTracksParser() throws Exception {
+        Assert.assertThat(subject.provideTracksParser(), CoreMatchers.instanceOf(TracksParser.class));
     }
 }
