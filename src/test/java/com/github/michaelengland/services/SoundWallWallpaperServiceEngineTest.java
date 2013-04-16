@@ -4,37 +4,44 @@ import android.graphics.Canvas;
 import android.os.Handler;
 import android.view.SurfaceHolder;
 import com.github.michaelengland.wallpaper.SoundWallArtist;
+import com.github.michaelengland.wallpaper.WallpaperState;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+
+import javax.inject.Provider;
 
 @RunWith(RobolectricTestRunner.class)
 public class SoundWallWallpaperServiceEngineTest {
     private SoundWallWallpaperService.SoundWallWallpaperServiceEngine subject;
+    @Mock
     private SoundWallArtist artist;
+    @Mock
+    Provider<SoundWallArtist> artistProvider;
+    @Mock
     private Handler handler;
     private Canvas canvas;
     private SurfaceHolder surfaceHolder;
 
     @Before
     public void setUp() throws Exception {
-        setupDependencies();
+        setupArtist();
         setupSubject();
         setupSurfaceHolder();
         subject.onCreate(surfaceHolder);
     }
 
-    private void setupDependencies() {
-        handler = PowerMockito.mock(Handler.class);
-        artist = PowerMockito.mock(SoundWallArtist.class);
+    private void setupArtist() {
+        Mockito.when(artistProvider.get()).thenReturn(artist);
     }
 
     private void setupSubject() {
         SoundWallWallpaperService service = new SoundWallWallpaperService();
-        service.artist = artist;
+        service.artistProvider = artistProvider;
         subject = PowerMockito.spy((SoundWallWallpaperService.SoundWallWallpaperServiceEngine) service
                 .onCreateEngine());
         subject.wallpaperDrawingHandler = handler;
@@ -94,6 +101,6 @@ public class SoundWallWallpaperServiceEngineTest {
     }
 
     private void verifyDraw() {
-        Mockito.verify(artist).draw(canvas);
+        Mockito.verify(artist).draw(Mockito.any(WallpaperState.class), canvas);
     }
 }

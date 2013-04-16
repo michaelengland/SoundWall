@@ -23,4 +23,13 @@
     <string name="logging_in">Logging in...</string>
     <string name="login_successful">Login Successful.</string>
     <string name="login_failed">Login Failed. Please try again.</string>
+    <string name="loading_track">Loading Track</string>
+    <string name="no_track">
+        Please favourite some tracks to use the live-wallpaper.
+    </string>
+    <string name="logged_out">
+        Please log in to use the live-wallpaper.
+    </string>
+    <string name="no_waveform">There is no waveform for this track.</string>
+    <string name="loading_waveform">Loading Waveform</string>
 </resources>

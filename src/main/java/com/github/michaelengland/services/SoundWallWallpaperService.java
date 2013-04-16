@@ -7,15 +7,20 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import com.github.michaelengland.SoundWallApplication;
 import com.github.michaelengland.wallpaper.SoundWallArtist;
+import com.github.michaelengland.wallpaper.WallpaperState;
+import com.github.michaelengland.wallpaper.WallpaperStateController;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class SoundWallWallpaperService extends WallpaperService {
     private static final String TAG = "SoundWallWallpaperService";
     private static final int FRAME_RATE = 50;
 
     @Inject
-    SoundWallArtist artist;
+    Provider<SoundWallArtist> artistProvider;
+    @Inject
+    Provider<WallpaperStateController> wallpaperStateControllerProvider;
 
     @Override
     public void onCreate() {
@@ -27,24 +32,33 @@ public class SoundWallWallpaperService extends WallpaperService {
     @Override
     public Engine onCreateEngine() {
         Log.d(TAG, "onCreateEngine()");
-        return new SoundWallWallpaperServiceEngine(new Handler());
+        return new SoundWallWallpaperServiceEngine();
     }
 
-    class SoundWallWallpaperServiceEngine extends WallpaperService.Engine {
+    class SoundWallWallpaperServiceEngine extends WallpaperService.Engine implements WallpaperStateController
+            .WallpaperStateChangeListener {
         private static final String TAG = "SoundWallWallpaperServiceEngine";
-        boolean visible;
+
+        private volatile WallpaperState state;
+        volatile boolean visible;
+
+        private WallpaperStateController wallpaperStateController;
+        SoundWallArtist artist;
         Handler wallpaperDrawingHandler;
         Runnable wallpaperDrawer;
-
-        SoundWallWallpaperServiceEngine(Handler wallpaperDrawingHandler) {
-            this.wallpaperDrawingHandler = wallpaperDrawingHandler;
-            this.wallpaperDrawer = new SoundWallWallpaperDrawer(this);
-        }
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             Log.d(TAG, "onCreate()");
             super.onCreate(surfaceHolder);
+            wallpaperDrawingHandler = new Handler();
+            wallpaperDrawer = new SoundWallWallpaperDrawer(this);
+            wallpaperStateController = wallpaperStateControllerProvider.get();
+            wallpaperStateController.setListener(this);
+            state = wallpaperStateController.getState();
+            wallpaperStateController.start();
+            artist = artistProvider.get();
+            artist.setContext(getBaseContext());
         }
 
         @Override
@@ -81,6 +95,14 @@ public class SoundWallWallpaperService extends WallpaperService {
             draw();
         }
 
+        @Override
+        public void onDestroy() {
+            Log.d(TAG, "onDestroy()");
+            super.onDestroy();
+            artist.setContext(null);
+            wallpaperStateController.stop();
+        }
+
         void draw() {
             final SurfaceHolder holder = getSurfaceHolder();
 
@@ -88,7 +110,7 @@ public class SoundWallWallpaperService extends WallpaperService {
             try {
                 canvas = holder.lockCanvas();
                 if (canvas != null) {
-                    artist.draw(canvas);
+                    artist.draw(state, canvas);
                 }
             } finally {
                 if (canvas != null) holder.unlockCanvasAndPost(canvas);
@@ -106,6 +128,11 @@ public class SoundWallWallpaperService extends WallpaperService {
 
         private void stopDrawing() {
             wallpaperDrawingHandler.removeCallbacks(wallpaperDrawer);
+        }
+
+        @Override
+        public void onWallpaperStateChanged(WallpaperState state) {
+            this.state = state;
         }
     }
 
