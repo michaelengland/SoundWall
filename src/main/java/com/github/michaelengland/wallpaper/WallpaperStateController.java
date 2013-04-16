@@ -137,6 +137,28 @@ public class WallpaperStateController {
         }
     }
 
+    public void selectNextTrack() {
+        int currentIndex = tracks.indexOf(state.getTrack());
+        int nextIndex;
+        if ((currentIndex) < 0 || (currentIndex >= tracks.size())) {
+            nextIndex = 0;
+        } else {
+            nextIndex = currentIndex + 1;
+        }
+        setActiveTrack(tracks.get(nextIndex));
+    }
+
+    public void selectPreviousTrack() {
+        int currentIndex = tracks.indexOf(state.getTrack());
+        int nextIndex;
+        if (currentIndex <= 0) {
+            nextIndex = 0;
+        } else {
+            nextIndex = currentIndex - 1;
+        }
+        setActiveTrack(tracks.get(nextIndex));
+    }
+
     public interface WallpaperStateChangeListener {
         void onWallpaperStateChanged(WallpaperState state);
     }

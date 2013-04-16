@@ -4,8 +4,11 @@ import android.graphics.Canvas;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import com.github.michaelengland.SoundWallApplication;
+import com.github.michaelengland.wallpaper.FlingGestureListener;
 import com.github.michaelengland.wallpaper.SoundWallArtist;
 import com.github.michaelengland.wallpaper.WallpaperState;
 import com.github.michaelengland.wallpaper.WallpaperStateController;
@@ -43,6 +46,7 @@ public class SoundWallWallpaperService extends WallpaperService {
         volatile boolean visible;
 
         private WallpaperStateController wallpaperStateController;
+        private GestureDetector gestureDetector;
         SoundWallArtist artist;
         Handler wallpaperDrawingHandler;
         Runnable wallpaperDrawer;
@@ -59,6 +63,7 @@ public class SoundWallWallpaperService extends WallpaperService {
             wallpaperStateController.start();
             artist = artistProvider.get();
             artist.setContext(getBaseContext());
+            gestureDetector = new GestureDetector(getBaseContext(), new TrackGestureListener(this));
         }
 
         @Override
@@ -71,6 +76,13 @@ public class SoundWallWallpaperService extends WallpaperService {
             } else {
                 wallpaperDrawingHandler.removeCallbacks(wallpaperDrawer);
             }
+        }
+
+        @Override
+        public void onTouchEvent(MotionEvent event) {
+            Log.d(TAG, "onTouchEvent()");
+            super.onTouchEvent(event);
+            gestureDetector.onTouchEvent(event);
         }
 
         @Override
@@ -133,6 +145,24 @@ public class SoundWallWallpaperService extends WallpaperService {
         @Override
         public void onWallpaperStateChanged(WallpaperState state) {
             this.state = state;
+        }
+    }
+
+    static class TrackGestureListener extends FlingGestureListener {
+        private SoundWallWallpaperServiceEngine engine;
+
+        public TrackGestureListener(SoundWallWallpaperServiceEngine engine) {
+            this.engine = engine;
+        }
+
+        @Override
+        public void onSwipeLeft() {
+            engine.wallpaperStateController.selectPreviousTrack();
+        }
+
+        @Override
+        public void onSwipeRight() {
+            engine.wallpaperStateController.selectNextTrack();
         }
     }
 
