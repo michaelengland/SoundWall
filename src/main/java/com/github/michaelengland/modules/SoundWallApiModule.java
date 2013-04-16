@@ -2,6 +2,7 @@ package com.github.michaelengland.modules;
 
 import android.content.res.AssetManager;
 import com.github.michaelengland.api.TracksParser;
+import com.github.michaelengland.managers.SettingsManager;
 import com.soundcloud.api.ApiWrapper;
 import dagger.Module;
 import dagger.Provides;
@@ -18,12 +19,12 @@ public class SoundWallApiModule {
     private static final String SOUND_CLOUD_CLIENT_SECRET_KEY = "soundcloud.client_secret";
 
     @Provides
-    ApiWrapper provideApiWrapper(final AssetManager assetManager) {
+    ApiWrapper provideApiWrapper(final AssetManager assetManager, final SettingsManager settingsManager) {
         Properties apiProperties = getApiProperties(assetManager);
         String clientId = apiProperties.getProperty(SOUND_CLOUD_CLIENT_ID_KEY);
         String clientSecret = apiProperties.getProperty(SOUND_CLOUD_CLIENT_SECRET_KEY);
         if (clientId != null && clientSecret != null) {
-            return new ApiWrapper(clientId, clientSecret, null, null);
+            return new ApiWrapper(clientId, clientSecret, null, settingsManager.getToken());
         } else {
             return null;
         }
