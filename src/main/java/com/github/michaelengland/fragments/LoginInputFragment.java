@@ -20,9 +20,9 @@ public class LoginInputFragment extends DialogFragment {
     private static final String USERNAME_KEY = "Username";
     private static final String PASSWORD_KEY = "Password";
 
-    OnLoginInputListener listener;
+    private OnLoginInputListener listener;
 
-    View loginView;
+    private View loginView;
 
     @InjectView(R.id.login_text)
     EditText loginText;

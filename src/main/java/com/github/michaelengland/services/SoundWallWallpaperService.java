@@ -48,7 +48,13 @@ public class SoundWallWallpaperService extends WallpaperService {
         private WallpaperStateController wallpaperStateController;
         private GestureDetector gestureDetector;
         private SoundWallArtist artist;
+        /**
+         * Package scope for tests
+         */
         Handler wallpaperDrawingHandler;
+        /**
+         * Package scope for tests
+         */
         Runnable wallpaperDrawer;
 
         @Override

@@ -22,7 +22,7 @@ public class SettingsFragment extends PreferenceFragment {
     private static final Uri SOUND_WALL_URI = Uri.parse("https://github.com/michaelengland/SoundWall");
     private static final Uri SOUND_CLOUD_URI = Uri.parse("https://soundcloud.com");
 
-    OnLoginAttemptRequestedListener listener;
+    private OnLoginAttemptRequestedListener listener;
 
     @Inject
     LoginManager loginManager;
