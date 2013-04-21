@@ -138,25 +138,63 @@ public class WallpaperStateController {
     }
 
     public void selectNextTrack() {
-        int currentIndex = tracks.indexOf(state.getTrack());
-        int nextIndex;
-        if ((currentIndex) < 0 || (currentIndex >= tracks.size())) {
-            nextIndex = 0;
-        } else {
-            nextIndex = currentIndex + 1;
+        if (tracks != null) {
+            setActiveTrack(tracks.get(nextIndex()));
         }
-        setActiveTrack(tracks.get(nextIndex));
     }
 
     public void selectPreviousTrack() {
-        int currentIndex = tracks.indexOf(state.getTrack());
-        int nextIndex;
-        if (currentIndex <= 0) {
-            nextIndex = 0;
-        } else {
-            nextIndex = currentIndex - 1;
+        if (tracks != null) {
+            setActiveTrack(tracks.get(previousIndex()));
         }
-        setActiveTrack(tracks.get(nextIndex));
+    }
+
+    private int nextIndex() {
+        if (noTrackActive()) {
+            return firstTrackIndex();
+        } else if (lastTrackActive()) {
+            return firstTrackIndex();
+        } else {
+            return currentIndex() + 1;
+        }
+    }
+
+    private int previousIndex() {
+        if (noTrackActive()) {
+            return firstTrackIndex();
+        } else if (firstTrackActive()) {
+            return lastTrackIndex();
+        } else {
+            return currentIndex() - 1;
+        }
+    }
+
+    private int currentIndex() {
+        return tracks.indexOf(state.getTrack());
+    }
+
+    private boolean noTrackActive() {
+        return currentIndex() == noTrackIndex();
+    }
+
+    private boolean lastTrackActive() {
+        return currentIndex() == lastTrackIndex();
+    }
+
+    private boolean firstTrackActive() {
+        return currentIndex() == firstTrackIndex();
+    }
+
+    private int noTrackIndex() {
+        return -1;
+    }
+
+    private int firstTrackIndex() {
+        return 0;
+    }
+
+    private int lastTrackIndex() {
+        return tracks.size() - 1;
     }
 
     public interface WallpaperStateChangeListener {
