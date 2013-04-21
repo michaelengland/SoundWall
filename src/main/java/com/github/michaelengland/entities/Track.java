@@ -14,7 +14,7 @@ public class Track {
         if (o instanceof Track) {
             Track otherTrack = (Track) o;
             return (otherTrack.title.equals(title)) &&
-                    (otherTrack.waveformUrl.equals(otherTrack.waveformUrl));
+                    (otherTrack.waveformUrl.equals(waveformUrl));
         } else {
             return false;
         }
