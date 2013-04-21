@@ -157,12 +157,12 @@ public class SoundWallWallpaperService extends WallpaperService {
 
         @Override
         public void onSwipeLeft() {
-            engine.wallpaperStateController.selectPreviousTrack();
+            engine.wallpaperStateController.selectNextTrack();
         }
 
         @Override
         public void onSwipeRight() {
-            engine.wallpaperStateController.selectNextTrack();
+            engine.wallpaperStateController.selectPreviousTrack();
         }
     }
 
