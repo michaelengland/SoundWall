@@ -65,11 +65,19 @@ public class SoundCloudClient {
     }
 
     private Bitmap performGetWaveformForTrack(Track track) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(track.getWaveformUri().toString()).openConnection();
-        connection.connect();
-        InputStream input = connection.getInputStream();
-        Bitmap bitmap = BitmapFactory.decodeStream(input);
-        connection.disconnect();
+        HttpURLConnection connection = null;
+        Bitmap bitmap = null;
+        try {
+            connection = (HttpURLConnection) new URL(track.getWaveformUri().toString()).openConnection
+                    ();
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            bitmap = BitmapFactory.decodeStream(input);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
         return bitmap;
     }
 }
