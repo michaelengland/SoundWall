@@ -23,7 +23,7 @@ public class SoundWallWallpaperService extends WallpaperService {
     @Inject
     Provider<SoundWallArtist> artistProvider;
     @Inject
-    Provider<WallpaperStateController> wallpaperStateControllerProvider;
+    Provider<WallpaperStateController> controllerProvider;
 
     @Override
     public void onCreate() {
@@ -47,7 +47,7 @@ public class SoundWallWallpaperService extends WallpaperService {
 
         private WallpaperStateController wallpaperStateController;
         private GestureDetector gestureDetector;
-        SoundWallArtist artist;
+        private SoundWallArtist artist;
         Handler wallpaperDrawingHandler;
         Runnable wallpaperDrawer;
 
@@ -57,7 +57,7 @@ public class SoundWallWallpaperService extends WallpaperService {
             super.onCreate(surfaceHolder);
             wallpaperDrawingHandler = new Handler();
             wallpaperDrawer = new SoundWallWallpaperDrawer(this);
-            wallpaperStateController = wallpaperStateControllerProvider.get();
+            wallpaperStateController = controllerProvider.get();
             wallpaperStateController.setListener(this);
             state = wallpaperStateController.getState();
             wallpaperStateController.start();
