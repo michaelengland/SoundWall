@@ -26,7 +26,6 @@ public class GetWaveformTask extends AsyncTask<Void, Void, Bitmap> {
         try {
             return client.getWaveformForTrack(track);
         } catch (SoundCloudClientException e) {
-            e.printStackTrace();
             return null;
         }
     }

@@ -21,7 +21,6 @@ public class GetTracksTask extends AsyncTask<Void, Void, List<Track>> {
         try {
             return client.getTracks();
         } catch (SoundCloudClientException e) {
-            e.printStackTrace();
             return null;
         }
     }
