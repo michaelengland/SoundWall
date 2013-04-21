@@ -20,7 +20,7 @@
         everywhere.
     </string>
     <string name="loading">Loading</string>
-    <string name="logging_in">Logging in...</string>
+    <string name="logging_in">Logging in…</string>
     <string name="login_successful">Login Successful.</string>
     <string name="login_failed">Login Failed. Please try again.</string>
     <string name="loading_track">Loading Track</string>

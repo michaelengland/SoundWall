@@ -10,7 +10,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <platform.version>4.1.1.4</platform.version>
-        <sdk.version>17</sdk.version>
+        <sdk.version>16</sdk.version>
         <support.version>r7</support.version>
         <soundcloud.version>1.2.1</soundcloud.version>
         <otto.version>1.3.3</otto.version>
@@ -93,6 +93,10 @@
                         <platform>${sdk.version}</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                    <lint>
+                        <skip>false</skip>
+                        <enableHtml>true</enableHtml>
+                    </lint>
                 </configuration>
                 <dependencies>
                     <dependency>
