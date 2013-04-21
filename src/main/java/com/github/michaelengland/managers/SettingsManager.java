@@ -32,7 +32,7 @@ public class SettingsManager {
         String access = sharedPreferences.getString(TOKEN_ACCESS_KEY, null);
         String refresh = sharedPreferences.getString(TOKEN_REFRESH_KEY, null);
         String scope = sharedPreferences.getString(TOKEN_SCOPE_KEY, null);
-        if (access != null && refresh != null && scope != null) {
+        if (access != null) {
             token = new Token(access, refresh, scope);
         }
     }

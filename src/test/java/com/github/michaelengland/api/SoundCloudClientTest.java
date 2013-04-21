@@ -54,7 +54,7 @@ public class SoundCloudClientTest {
         tracks = Collections.emptyList();
         track = new Track("title", url);
         HttpEntity entity = mock(HttpEntity.class);
-        doReturn(token).when(apiWrapper).login("user", "pass");
+        doReturn(token).when(apiWrapper).login("user", "pass", Token.SCOPE_NON_EXPIRING);
         subject = new SoundCloudClient(apiWrapper, tracksParser);
         doReturn(inputStream).when(entity).getContent();
         doReturn(entity).when(response).getEntity();
@@ -71,7 +71,7 @@ public class SoundCloudClientTest {
 
     @Test(expected = SoundCloudClientException.class)
     public void testShouldThrowClientExceptionWhenApiWrapperThrowsExceptionOnLogin() throws Exception {
-        doThrow(new IOException()).when(apiWrapper).login("user", "pass");
+        doThrow(new IOException()).when(apiWrapper).login("user", "pass", Token.SCOPE_NON_EXPIRING);
         subject.login("user", "pass");
     }
 

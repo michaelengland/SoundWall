@@ -34,7 +34,7 @@ public class SoundCloudClient {
     }
 
     private Token performLogin(String username, String password) throws IOException {
-        return apiWrapper.login(username, password);
+        return apiWrapper.login(username, password, Token.SCOPE_NON_EXPIRING);
     }
 
     public List<Track> getTracks() throws SoundCloudClientException {
