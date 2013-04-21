@@ -2,19 +2,26 @@ package com.github.michaelengland.api;
 
 import com.soundcloud.api.Token;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class LoginTaskTest {
     private TestableLoginTask subject;
+    @Mock
     private SoundCloudClient client;
+    @Mock
     private Token token;
+    @Mock
     private LoginTask.LoginTaskListener listener;
 
     static class TestableLoginTask extends LoginTask {
@@ -31,49 +38,55 @@ public class LoginTaskTest {
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
         subject = new TestableLoginTask();
         subject.setUsername("user");
         subject.setPassword("pass");
-        client = PowerMockito.mock(SoundCloudClient.class);
-        token = PowerMockito.mock(Token.class);
-        listener = PowerMockito.mock(LoginTask.LoginTaskListener.class);
         subject.client = client;
         subject.setListener(listener);
     }
 
     @Test
     public void testShouldReturnClientLoginTokenWhenSuccessful() throws Exception {
-        Mockito.when(client.login("user", "pass")).thenReturn(token);
-        Assert.assertThat(subject.doInBackground(), CoreMatchers.equalTo(token));
+        doReturn(token).when(client).login("user", "pass");
+        assertThat(subject.doInBackground(), equalTo(token));
     }
 
     @Test
     public void testShouldReturnNullLoginTokenWhenFailure() throws Exception {
-        Mockito.doThrow(SoundCloudClientException.class).when(client).login("user", "pass");
-        Assert.assertThat(subject.doInBackground(), CoreMatchers.nullValue());
+        doThrow(SoundCloudClientException.class).when(client).login("user", "pass");
+        assertThat(subject.doInBackground(), nullValue());
     }
 
     @Test
     public void testShouldFireListenerSuccessWhenListenerSetAndTokenRetrieved() throws Exception {
         subject.onPostExecute(token);
-        Mockito.verify(listener).onLoginSuccess(token);
+        verify(listener).onLoginSuccess(token);
     }
 
     @Test
     public void testShouldFireListenerFailureWhenListenerSetAndTokenNotRetrieved() throws Exception {
         subject.onPostExecute(null);
-        Mockito.verify(listener).onLoginFailure();
+        verify(listener).onLoginFailure();
     }
 
     @Test
     public void testShouldNotCrashWhenListenerNotSetAndTokenRetrieved() throws Exception {
-        subject.setListener(null);
-        subject.onPostExecute(token);
+        try {
+            subject.setListener(null);
+            subject.onPostExecute(token);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 
     @Test
     public void testShouldNotCrashWhenListenerNotSetAndTokenNotRetrieved() throws Exception {
-        subject.setListener(null);
-        subject.onPostExecute(null);
+        try {
+            subject.setListener(null);
+            subject.onPostExecute(null);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 }

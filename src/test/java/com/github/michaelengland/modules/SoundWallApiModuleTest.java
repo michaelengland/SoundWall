@@ -1,28 +1,33 @@
 package com.github.michaelengland.modules;
 
 import android.content.res.AssetManager;
-import com.github.michaelengland.api.TracksParser;
 import com.github.michaelengland.managers.SettingsManager;
 import com.soundcloud.api.ApiWrapper;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+
 @RunWith(RobolectricTestRunner.class)
 public class SoundWallApiModuleTest {
     private SoundWallApiModule subject;
+    @Mock
     private AssetManager assetManager;
+    @Mock
     private SettingsManager settingsManager;
     private String properties = "soundcloud.client_id = testId\n" +
             "soundcloud.client_secret = testSecret\n";
@@ -30,11 +35,10 @@ public class SoundWallApiModuleTest {
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
         subject = new SoundWallApiModule();
-        assetManager = PowerMockito.mock(AssetManager.class);
-        settingsManager = PowerMockito.mock(SettingsManager.class);
         inputStream = new ByteArrayInputStream(properties.getBytes());
-        Mockito.when(assetManager.open("soundcloud.properties")).thenReturn(inputStream);
+        doReturn(inputStream).when(assetManager).open("soundcloud.properties");
     }
 
     @After
@@ -44,8 +48,7 @@ public class SoundWallApiModuleTest {
 
     @Test
     public void testProvidesApiWrapper() throws Exception {
-        Assert.assertThat(subject.provideApiWrapper(assetManager, settingsManager), CoreMatchers.instanceOf(ApiWrapper
-                .class));
+        assertThat(subject.provideApiWrapper(assetManager, settingsManager), notNullValue());
     }
 
     @Test
@@ -58,22 +61,18 @@ public class SoundWallApiModuleTest {
         clientIdField.setAccessible(true);
         Field clientSecretField = apiWrapper.getClass().getDeclaredField("mClientSecret");
         clientSecretField.setAccessible(true);
-        Assert.assertThat((String) clientIdField.get(apiWrapper), CoreMatchers.equalTo("testId"));
-        Assert.assertThat((String) clientSecretField.get(apiWrapper), CoreMatchers.equalTo("testSecret"));
+        assertThat((String) clientIdField.get(apiWrapper), equalTo("testId"));
+        assertThat((String) clientSecretField.get(apiWrapper), equalTo("testSecret"));
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testThrowsRuntimeErrorWhenNoPropertiesFileSet() throws Exception {
-        Mockito.when(assetManager.open("soundcloud.properties")).thenThrow(new IOException("File not found"));
-        try {
-            subject.provideApiWrapper(assetManager, settingsManager);
-            Assert.fail();
-        } catch (RuntimeException e) {
-        }
+        doThrow(new IOException("File not found")).when(assetManager).open("soundcloud.properties");
+        subject.provideApiWrapper(assetManager, settingsManager);
     }
 
     @Test
     public void testProvidesTracksParser() throws Exception {
-        Assert.assertThat(subject.provideTracksParser(), CoreMatchers.instanceOf(TracksParser.class));
+        assertThat(subject.provideTracksParser(), notNullValue());
     }
 }

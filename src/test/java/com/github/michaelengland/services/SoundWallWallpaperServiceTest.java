@@ -1,11 +1,12 @@
 package com.github.michaelengland.services;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
 
 @RunWith(RobolectricTestRunner.class)
 public class SoundWallWallpaperServiceTest {
@@ -19,7 +20,6 @@ public class SoundWallWallpaperServiceTest {
 
     @Test
     public void testShouldCreateNewEngines() throws Exception {
-        Assert.assertThat(subject.onCreateEngine(), CoreMatchers.instanceOf(SoundWallWallpaperService
-                .SoundWallWallpaperServiceEngine.class));
+        assertThat(subject.onCreateEngine(), notNullValue());
     }
 }

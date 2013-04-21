@@ -1,14 +1,12 @@
 package com.github.michaelengland.entities;
 
-import android.net.Uri;
-
 public class Track {
     private String title;
-    private Uri waveformUri;
+    private Url waveformUrl;
 
-    public Track(final String title, final Uri waveformUri) {
+    public Track(final String title, final Url waveformUrl) {
         this.title = title;
-        this.waveformUri = waveformUri;
+        this.waveformUrl = waveformUrl;
     }
 
     @Override
@@ -16,7 +14,7 @@ public class Track {
         if (o instanceof Track) {
             Track otherTrack = (Track) o;
             return (otherTrack.title.equals(title)) &&
-                    (otherTrack.waveformUri.equals(otherTrack.waveformUri));
+                    (otherTrack.waveformUrl.equals(otherTrack.waveformUrl));
         } else {
             return false;
         }
@@ -26,7 +24,7 @@ public class Track {
         return title;
     }
 
-    public Uri getWaveformUri() {
-        return waveformUri;
+    public Url getWaveformUrl() {
+        return waveformUrl;
     }
 }

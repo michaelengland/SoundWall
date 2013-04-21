@@ -13,12 +13,11 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 public class SoundCloudClient {
-    ApiWrapper apiWrapper;
-    TracksParser tracksParser;
+    private ApiWrapper apiWrapper;
+    private TracksParser tracksParser;
 
     @Inject
     SoundCloudClient(final ApiWrapper apiWrapper, final TracksParser tracksParser) {
@@ -68,7 +67,7 @@ public class SoundCloudClient {
         HttpURLConnection connection = null;
         Bitmap bitmap = null;
         try {
-            connection = (HttpURLConnection) new URL(track.getWaveformUri().toString()).openConnection
+            connection = (HttpURLConnection) track.getWaveformUrl().openConnection
                     ();
             connection.connect();
             InputStream input = connection.getInputStream();

@@ -5,11 +5,13 @@ import android.preference.PreferenceManager;
 import com.soundcloud.api.Token;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
 
 @RunWith(RobolectricTestRunner.class)
 public class SettingsManagerTest {
@@ -28,15 +30,15 @@ public class SettingsManagerTest {
     public void testShouldRetrieveTokenFromSharedPreferences() throws Exception {
         sharedPreferences.edit().putString("token_access", "access").putString("token_refresh",
                 "refresh").putString("token_scope", "scope").commit();
-        Assert.assertThat(subject.getToken(), CoreMatchers.equalTo(token));
+        assertThat(subject.getToken(), equalTo(token));
     }
 
     @Test
     public void testShouldStoreTokenToSharedPreferences() throws Exception {
         subject.setToken(token);
-        Assert.assertThat(sharedPreferences.getString("token_access", null), CoreMatchers.equalTo("access"));
-        Assert.assertThat(sharedPreferences.getString("token_refresh", null), CoreMatchers.equalTo("refresh"));
-        Assert.assertThat(sharedPreferences.getString("token_scope", null), CoreMatchers.equalTo("scope"));
+        assertThat(sharedPreferences.getString("token_access", null), equalTo("access"));
+        assertThat(sharedPreferences.getString("token_refresh", null), equalTo("refresh"));
+        assertThat(sharedPreferences.getString("token_scope", null), equalTo("scope"));
     }
 
     @Test
@@ -44,8 +46,8 @@ public class SettingsManagerTest {
         sharedPreferences.edit().putString("token_access", "access").putString("token_refresh",
                 "refresh").putString("token_scope", "scope").commit();
         subject.setToken(null);
-        Assert.assertNull(sharedPreferences.getString("token_access", null));
-        Assert.assertNull(sharedPreferences.getString("token_refresh", null));
-        Assert.assertNull(sharedPreferences.getString("token_scope", null));
+        assertThat(sharedPreferences.getString("token_access", null), nullValue());
+        assertThat(sharedPreferences.getString("token_refresh", null), nullValue());
+        assertThat(sharedPreferences.getString("token_scope", null), nullValue());
     }
 }

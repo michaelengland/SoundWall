@@ -5,28 +5,34 @@ import android.accounts.AccountManager;
 import com.soundcloud.api.Token;
 import com.squareup.otto.Bus;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 public class LoginManagerTest {
     private LoginManager subject;
+    @Mock
     private SettingsManager settingsManager;
+    @Mock
     private AccountManager accountManager;
     private Token token;
+    @Mock
     private Bus bus;
     private Account[] accounts;
 
     @Before
     public void setUp() throws Exception {
-        settingsManager = PowerMockito.mock(SettingsManager.class);
-        accountManager = PowerMockito.mock(AccountManager.class);
-        bus = PowerMockito.mock(Bus.class);
+        MockitoAnnotations.initMocks(this);
         token = new Token("", "");
         subject = new LoginManager(accountManager, settingsManager, bus);
         accounts = new Account[2];
@@ -36,66 +42,66 @@ public class LoginManagerTest {
 
     @Test
     public void testShouldRegisterWithBus() throws Exception {
-        Mockito.verify(bus).register(subject);
+        verify(bus).register(subject);
     }
 
     @Test
     public void testShouldBeLoggedInWhenTokenExists() throws Exception {
-        Mockito.when(settingsManager.getToken()).thenReturn(token);
-        Assert.assertTrue(subject.isLoggedIn());
+        doReturn(token).when(settingsManager).getToken();
+        assertThat(subject.isLoggedIn(), is(true));
     }
 
     @Test
     public void testShouldBeLoggedOutWhenTokenDoesntExist() throws Exception {
-        Mockito.when(settingsManager.getToken()).thenReturn(null);
-        Assert.assertFalse(subject.isLoggedIn());
+        doReturn(null).when(settingsManager).getToken();
+        assertThat(subject.isLoggedIn(), is(false));
     }
 
     @Test
     public void testShouldNotReturnSoundCloudAccountWhenNoSoundCloudAccountsSaved() throws Exception {
-        Mockito.when(accountManager.getAccountsByType("com.soundcloud.android.account")).thenReturn(new Account[0]);
-        Assert.assertNull(subject.soundCloudAccount());
+        doReturn(new Account[0]).when(accountManager).getAccountsByType("com.soundcloud.android.account");
+        assertThat(subject.soundCloudAccount(), nullValue());
     }
 
     @Test
     public void testShouldReturnSoundCloudAccountWhenMultipleSoundCloudAccountsSaved() throws Exception {
-        Mockito.when(accountManager.getAccountsByType("com.soundcloud.android.account")).thenReturn(accounts);
-        Assert.assertThat(subject.soundCloudAccount(), CoreMatchers.equalTo(accounts[0]));
+        doReturn(accounts).when(accountManager).getAccountsByType("com.soundcloud.android.account");
+        assertThat(subject.soundCloudAccount(), equalTo(accounts[0]));
     }
 
     @Test
     public void testShouldNotSuggestedAnyUsernameWhenNoSoundCloudAccountsSaved() throws Exception {
-        Mockito.when(accountManager.getAccountsByType("com.soundcloud.android.account")).thenReturn(new Account[0]);
-        Assert.assertNull(subject.suggestedUsername());
+        doReturn(new Account[0]).when(accountManager).getAccountsByType("com.soundcloud.android.account");
+        assertThat(subject.suggestedUsername(), nullValue());
     }
 
     @Test
     public void testShouldSuggestFirstUsernameWhenMultipleSoundCloudAccountsSaved() throws Exception {
-        Mockito.when(accountManager.getAccountsByType("com.soundcloud.android.account")).thenReturn(accounts);
-        Assert.assertThat(subject.suggestedUsername(), CoreMatchers.equalTo("testUser"));
+        doReturn(accounts).when(accountManager).getAccountsByType("com.soundcloud.android.account");
+        assertThat(subject.suggestedUsername(), equalTo("testUser"));
     }
 
     @Test
     public void testShouldSetTokenOnLogin() throws Exception {
         subject.login(token);
-        Mockito.verify(settingsManager).setToken(token);
+        verify(settingsManager).setToken(token);
     }
 
     @Test
     public void testShouldFireUserStateChangeEventOnLogin() throws Exception {
         subject.login(token);
-        Mockito.verify(bus).post(new UserStateChangeEvent());
+        verify(bus).post(new UserStateChangeEvent());
     }
 
     @Test
     public void testShouldSetTokenToNullOnLogout() throws Exception {
         subject.logout();
-        Mockito.verify(settingsManager).setToken(null);
+        verify(settingsManager).setToken(null);
     }
 
     @Test
     public void testShouldFireUserStateChangeEventOnLogout() throws Exception {
         subject.logout();
-        Mockito.verify(bus).post(new UserStateChangeEvent());
+        verify(bus).post(new UserStateChangeEvent());
     }
 }

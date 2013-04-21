@@ -1,21 +1,24 @@
 package com.github.michaelengland.api;
 
-import android.net.Uri;
 import com.github.michaelengland.entities.Track;
+import com.github.michaelengland.entities.Url;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
 public class TracksParserTest {
@@ -24,11 +27,12 @@ public class TracksParserTest {
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
         tracks = new ArrayList<Track>(2);
         tracks.add(new Track("Running CS-15 Through Itself",
-                Uri.parse("http://w1.sndcdn.com/BHaUCkUiJzN5_m.png")));
+                new Url("http://w1.sndcdn.com/BHaUCkUiJzN5_m.png")));
         tracks.add(new Track("Katyperryrmx work in progress",
-                Uri.parse("http://w1.sndcdn.com/S0Gse1m7NnG3_m.png")));
+                new Url("http://w1.sndcdn.com/S0Gse1m7NnG3_m.png")));
         subject = new TracksParser();
     }
 
@@ -37,44 +41,29 @@ public class TracksParserTest {
         InputStream inputStream = getClass().getResourceAsStream("/tracks.json");
 
         List<Track> parsedTracks = subject.parseTracks(inputStream);
-        Assert.assertThat(parsedTracks, CoreMatchers.notNullValue());
-        Assert.assertThat(parsedTracks.size(), CoreMatchers.equalTo(2));
-        Assert.assertThat(parsedTracks.get(0), CoreMatchers.equalTo(tracks.get(0)));
-        Assert.assertThat(parsedTracks.get(1), CoreMatchers.equalTo(tracks.get(1)));
+        assertThat(parsedTracks, notNullValue());
+        assertThat(parsedTracks.size(), equalTo(2));
+        assertThat(parsedTracks.get(0), equalTo(tracks.get(0)));
+        assertThat(parsedTracks.get(1), equalTo(tracks.get(1)));
     }
 
     @SuppressWarnings("unchecked")
-    @Test
+    @Test(expected = IOException.class)
     public void testParseTracksThrowsIOExceptionWhenInputStreamProblem() throws Exception {
-        InputStream inputStream = PowerMockito.mock(InputStream.class);
-        Mockito.when(inputStream.read()).thenThrow(IOException.class);
-
-        try {
-            subject.parseTracks(inputStream);
-            Assert.fail();
-        } catch (IOException e) {
-        }
+        InputStream inputStream = mock(InputStream.class);
+        doThrow(IOException.class).when(inputStream).read();
+        subject.parseTracks(inputStream);
     }
 
-    @Test
+    @Test(expected = JSONException.class)
     public void testTestParseTracksThrowsJSONExceptionWhenInvalidJson() throws Exception {
         InputStream inputStream = getClass().getResourceAsStream("/invalid.json");
-
-        try {
-            subject.parseTracks(inputStream);
-            Assert.fail();
-        } catch (JSONException e) {
-        }
+        subject.parseTracks(inputStream);
     }
 
-    @Test
+    @Test(expected = JSONException.class)
     public void testTestParseTracksThrowsJSONExceptionWhenWaveformNotFound() throws Exception {
         InputStream inputStream = getClass().getResourceAsStream("/missing.json");
-
-        try {
-            subject.parseTracks(inputStream);
-            Assert.fail();
-        } catch (JSONException e) {
-        }
+        subject.parseTracks(inputStream);
     }
 }
