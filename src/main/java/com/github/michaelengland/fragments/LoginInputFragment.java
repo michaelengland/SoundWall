@@ -79,7 +79,7 @@ public class LoginInputFragment extends DialogFragment {
         if (activity instanceof OnLoginInputListener) {
             listener = (OnLoginInputListener) activity;
         } else {
-            throw new ClassCastException(activity.toString()
+            throw new IllegalArgumentException(activity.toString()
                     + " must implement LoginInputFragment.OnLoginInputListener");
         }
     }

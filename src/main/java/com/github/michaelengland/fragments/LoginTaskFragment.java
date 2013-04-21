@@ -78,7 +78,7 @@ public class LoginTaskFragment extends DialogFragment implements LoginTask.Login
         if (activity instanceof OnLoginStatusChangedListener) {
             this.listener = (OnLoginStatusChangedListener) activity;
         } else {
-            throw new ClassCastException(activity.toString()
+            throw new IllegalArgumentException(activity.toString()
                     + " must implement LoginTaskFragment.OnLoginStatusChangedListener");
         }
     }

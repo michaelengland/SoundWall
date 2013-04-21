@@ -69,7 +69,7 @@ public class SettingsFragment extends PreferenceFragment {
         if (activity instanceof OnLoginAttemptRequestedListener) {
             listener = (OnLoginAttemptRequestedListener) activity;
         } else {
-            throw new ClassCastException(activity.toString()
+            throw new IllegalArgumentException(activity.toString()
                     + " must implement SettingsFragment.OnLoginPreferenceClickedListener");
         }
     }
